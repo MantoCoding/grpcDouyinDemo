@@ -1,7 +1,6 @@
 package main
 
 import (
-	"douyinLoginDemo/service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -9,7 +8,7 @@ func main() {
 
 	r := gin.Default()
 
-	go service.LoginServiceLis()
+	//go service.LoginServiceLis()
 
 	//访问地址，处理我们的请求 Request Response
 

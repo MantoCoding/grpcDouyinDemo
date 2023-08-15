@@ -3,6 +3,10 @@ package main
 import (
 	"context"
 	"douyinLoginDemo/service"
+	"google.golang.org/grpc/grpclog"
+	"net"
+
+	//"douyinLoginDemo/service"
 	pb "douyinLoginDemo/service/user_login_grpc"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -30,21 +34,35 @@ func initRouter(r *gin.Engine) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local&timeout=%s", db_username, db_password, host, port, Dbname, timeout)
 	//连接MYSQL, 获得DB类型实例，用于后面的数据库读写操作。
 	db, err := gorm.Open(mysql.Open(dsn))
+	fmt.Println(db)
 	if err != nil {
 		panic("连接数据库失败, error=" + err.Error())
 	}
 	// 连接成功
 	fmt.Println("数据库连接成功")
 
-	// 创建gRPC服务
-	grpcServer := grpc.NewServer()
+	go func() {
+		// 创建gRPC服务
+		grpcServer := grpc.NewServer()
 
-	// 注册LoginService服务
-	//loginSrv := &service.UserLoginService{db: db} // 传入GORM数据库连接
-	pb.RegisterLoginServiceServer(grpcServer, &service.UserLoginService{DB: db})
+		// 注册LoginService服务
+		//loginSrv := &service.UserLoginService{db: db} // 传入GORM数据库连接
+		pb.RegisterLoginServiceServer(grpcServer, &service.UserLoginService{DB: db})
+		fmt.Println("grpc server running : 8083 ")
+
+		listen, err := net.Listen("tcp", ":8083")
+		if err != nil {
+			grpclog.Fatalf("Failed to listen: %v", err)
+		}
+
+		if err := grpcServer.Serve(listen); err != nil {
+
+		}
+	}()
 
 	//获取请求参数，调用grpc客户端
-	r.POST("/douyin/user/login", func(c *gin.Context) {
+	r.POST("/douyin/user/login/", func(c *gin.Context) {
+		fmt.Println("gin ser running : 8080 ")
 		//username := c.Query("username")
 		//password := c.Query("password")
 
@@ -56,6 +74,7 @@ func initRouter(r *gin.Engine) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to connect to gRPC server"})
 		}
 
+		defer conn.Close()
 		//初始化客户端
 		//client := pb.NewLoginServiceClient(conn)
 		//result, err := client.Login(context.Background(), &pb.DouyinUserLoginRequest{
@@ -81,7 +100,12 @@ func initRouter(r *gin.Engine) {
 		}
 		// 处理登录响应
 		if result.StatusMsg == "Succeed" {
-			c.JSON(http.StatusOK, gin.H{"message": "登录成功"})
+			c.JSON(http.StatusOK, gin.H{
+				"message":    "登录成功",
+				"StatusCode": result.StatusCode,
+				"StatusMsg":  result.StatusMsg,
+				"Token":      "token_test",
+			})
 		} else {
 			c.JSON(http.StatusUnauthorized, gin.H{"message": "无法访问"})
 		}

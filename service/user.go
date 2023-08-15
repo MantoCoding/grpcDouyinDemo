@@ -7,6 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
 	"gorm.io/gorm"
+	"log"
 	"net"
 )
 
@@ -22,6 +23,7 @@ func (UserLoginService) Login(ctx context.Context, req *pb.DouyinUserLoginReques
 	username := req.Username
 	password := req.Password
 	token := username + password
+	resp = new(pb.DouyinUserLoginResponse)
 	resp.StatusCode = 0
 	resp.StatusMsg = "Succeed"
 	resp.UserId = 1
@@ -32,11 +34,7 @@ func (UserLoginService) Login(ctx context.Context, req *pb.DouyinUserLoginReques
 	return
 }
 
-func LoginServiceLis() {
-	defer func() {
-		err := recover()
-		fmt.Println(err)
-	}()
+func main() {
 	// 监听端口
 	listen, err := net.Listen("tcp", ":8083")
 	if err != nil {
@@ -50,7 +48,30 @@ func LoginServiceLis() {
 	pb.RegisterLoginServiceServer(s, &server)
 	fmt.Println("grpc server running :8083")
 	// 开始处理客户端请求。
-	err = s.Serve(listen)
+	//reflection.Register(s)
+	if err := s.Serve(listen); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
+
 }
 
-func main() {}
+//func LoginServiceLis() {
+//	defer func() {
+//		err := recover()
+//		fmt.Println(err)
+//	}()
+//	// 监听端口
+//	listen, err := net.Listen("tcp", ":8083")
+//	if err != nil {
+//		grpclog.Fatalf("Failed to listen: %v", err)
+//	}
+//
+//	// 创建一个gRPC服务器实例。
+//	s := grpc.NewServer()
+//	server := UserLoginService{}
+//	// 将server结构体注册为gRPC服务。
+//	pb.RegisterLoginServiceServer(s, &server)
+//	fmt.Println("grpc server running :8083")
+//	// 开始处理客户端请求。
+//	err = s.Serve(listen)
+//}
