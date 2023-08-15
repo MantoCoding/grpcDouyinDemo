@@ -1,11 +1,11 @@
-package service
+package user_service
 
 import (
 	"context"
-	"douyinLoginDemo/service/pojo"
-	pb "douyinLoginDemo/service/user_login_grpc"
-	"douyinLoginDemo/utils"
 	"fmt"
+	"github.com/MantoCoding/grpcDouyinDemo/user_service/pojo"
+	pb "github.com/MantoCoding/grpcDouyinDemo/user_service/user_login_grpc"
+	"github.com/MantoCoding/grpcDouyinDemo/utils"
 	"gorm.io/gorm"
 )
 

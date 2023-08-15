@@ -22,7 +22,7 @@ const (
 	LoginService_Login_FullMethodName = "/user_login_grpc.LoginService/Login"
 )
 
-// LoginServiceClient is the api API for LoginService service.
+// LoginServiceClient is the api API for LoginService user_service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LoginServiceClient interface {
@@ -47,7 +47,7 @@ func (c *loginServiceClient) Login(ctx context.Context, in *DouyinUserLoginReque
 	return out, nil
 }
 
-// LoginServiceServer is the server API for LoginService service.
+// LoginServiceServer is the server API for LoginService user_service.
 // All implementations must embed UnimplementedLoginServiceServer
 // for forward compatibility
 type LoginServiceServer interface {
@@ -65,7 +65,7 @@ func (UnimplementedLoginServiceServer) Login(context.Context, *DouyinUserLoginRe
 }
 func (UnimplementedLoginServiceServer) mustEmbedUnimplementedLoginServiceServer() {}
 
-// UnsafeLoginServiceServer may be embedded to opt out of forward compatibility for this service.
+// UnsafeLoginServiceServer may be embedded to opt out of forward compatibility for this user_service.
 // Use of this interface is not recommended, as added methods to LoginServiceServer will
 // result in compilation errors.
 type UnsafeLoginServiceServer interface {
@@ -94,7 +94,7 @@ func _LoginService_Login_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-// LoginService_ServiceDesc is the grpc.ServiceDesc for LoginService service.
+// LoginService_ServiceDesc is the grpc.ServiceDesc for LoginService user_service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var LoginService_ServiceDesc = grpc.ServiceDesc{

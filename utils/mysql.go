@@ -9,7 +9,7 @@ import (
 
 var mysqlDB *gorm.DB
 
-type mysql struct {
+type Mysql struct {
 	Username string
 	Password string
 	Host     string
@@ -20,8 +20,8 @@ type mysql struct {
 	lock sync.Mutex // 单例模式锁
 }
 
-func DefaultMySQLDB() *mysql {
-	return &mysql{
+func DefaultMySQLDB() *Mysql {
+	return &Mysql{
 		Username: "douyin",
 		Password: "douyin",
 		Host:     "43.143.14.234",
@@ -31,7 +31,7 @@ func DefaultMySQLDB() *mysql {
 	}
 }
 
-func (m *mysql) GetDB(db *gorm.DB) (*gorm.DB, error) {
+func (m *Mysql) GetDB(db *gorm.DB) (*gorm.DB, error) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 

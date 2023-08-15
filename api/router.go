@@ -2,13 +2,13 @@ package main
 
 import (
 	"context"
-	"douyinLoginDemo/service"
+	"github.com/MantoCoding/grpcDouyinDemo/user_service"
 	"google.golang.org/grpc/grpclog"
 	"net"
 
-	//"douyinLoginDemo/service"
-	pb "douyinLoginDemo/service/user_login_grpc"
 	"fmt"
+	//"douyinLoginDemo/user_service"
+	pb "github.com/MantoCoding/grpcDouyinDemo/user_service/user_login_grpc"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -46,8 +46,8 @@ func initRouter(r *gin.Engine) {
 		grpcServer := grpc.NewServer()
 
 		// 注册LoginService服务
-		//loginSrv := &service.UserLoginService{db: db} // 传入GORM数据库连接
-		pb.RegisterLoginServiceServer(grpcServer, &service.UserLoginService{DB: db})
+		//loginSrv := &user_service.UserLoginService{db: db} // 传入GORM数据库连接
+		pb.RegisterLoginServiceServer(grpcServer, &user_service.UserLoginService{DB: db})
 		fmt.Println("grpc server running : 8083 ")
 
 		listen, err := net.Listen("tcp", ":8083")
@@ -94,8 +94,8 @@ func initRouter(r *gin.Engine) {
 		result, err := client.Login(context.Background(), &req)
 		if err != nil {
 			//c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to call gRPC service 0814"})
-			//c.JSON(http.StatusOK, gin.H{"error": "Failed to call gRPC service"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to call gRPC user_service 0814"})
+			//c.JSON(http.StatusOK, gin.H{"error": "Failed to call gRPC user_service"})
 			return
 		}
 		// 处理登录响应
@@ -118,7 +118,7 @@ func initRouter(r *gin.Engine) {
 	//apiRouter.GET("/feed/", controller.Feed)
 	//apiRouter.GET("/user/", controller.UserInfo)
 	//apiRouter.POST("/user/register/", controller.Register)
-	//apiRouter.POST("/user/login/", service.Login)
-	//apiRouter.POST("/publish/action/", service.Publish)
+	//apiRouter.POST("/user/login/", user_service.Login)
+	//apiRouter.POST("/publish/action/", user_service.Publish)
 
 }

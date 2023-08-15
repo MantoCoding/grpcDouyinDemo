@@ -1,9 +1,9 @@
-package service
+package user_service
 
 import (
 	"context"
-	pb "douyinLoginDemo/service/user_login_grpc"
 	"fmt"
+	pb "github.com/MantoCoding/grpcDouyinDemo/user_service/user_login_grpc"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -42,8 +42,8 @@ func GrpcMiddleware(client pb.LoginServiceClient) gin.HandlerFunc {
 		result, err := client.Login(context.Background(), &req)
 		if err != nil {
 			//c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to call gRPC service 0814"})
-			//c.JSON(http.StatusOK, gin.H{"error": "Failed to call gRPC service"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to call gRPC user_service 0814"})
+			//c.JSON(http.StatusOK, gin.H{"error": "Failed to call gRPC user_service"})
 			return
 		}
 		// 处理登录响应

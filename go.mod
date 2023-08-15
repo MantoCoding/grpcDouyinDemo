@@ -1,4 +1,4 @@
-module douyinLoginDemo
+module github.com/MantoCoding/grpcDouyinDemo
 
 go 1.20
 
