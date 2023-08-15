@@ -3,42 +3,28 @@ package user_service
 import (
 	"context"
 	"fmt"
+	api "github.com/MantoCoding/grpcDouyinDemo/api/client"
 	pb "github.com/MantoCoding/grpcDouyinDemo/user_service/user_login_grpc"
 	"github.com/gin-gonic/gin"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"net/http"
 )
 
-func GrpcMiddleware(client pb.LoginServiceClient) gin.HandlerFunc {
+// 实现了 client 端调用 server 端的方法
+
+func UserLoginAction() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		//username := c.Query("username")
-		//password := c.Query("password")
 
-		//创建grpc客户端/grpc连接
-		addr := ":8083"
-		conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
-		if err != nil {
-			//log.Fatalf(fmt.Sprintf("grpc connect addr 连接失败"))
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to connect to gRPC server"})
-		}
+		// 客户端
+		client := api.C.GetUserLoginClient()
 
-		//初始化客户端
-		//api := pb.NewLoginServiceClient(conn)
-		//result, err := api.Login(context.Background(), &pb.DouyinUserLoginRequest{
-		//	Username: username,
-		//	Password: password,
-		//})
 		// 解析请求参数
 		var req pb.DouyinUserLoginRequest
 		if err := c.Bind(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		//defer conn.Close()
 
 		// 调用gRPC服务
-		client := pb.NewLoginServiceClient(conn)
 		result, err := client.Login(context.Background(), &req)
 		if err != nil {
 			//c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -48,25 +34,15 @@ func GrpcMiddleware(client pb.LoginServiceClient) gin.HandlerFunc {
 		}
 		// 处理登录响应
 		if result.StatusMsg == "Succeed" {
-			c.JSON(http.StatusOK, gin.H{"message": "登录成功"})
+			c.JSON(http.StatusOK, gin.H{
+				"message":    "登录成功",
+				"StatusCode": result.StatusCode,
+				"StatusMsg":  result.StatusMsg,
+				"Token":      result.Token,
+			})
 		} else {
-			c.JSON(http.StatusUnauthorized, gin.H{"message": "无法访问"})
+			c.JSON(int(result.StatusCode), gin.H{"StatusMsg": result.StatusMsg})
 		}
 		fmt.Println(result, err)
-		//fmt.Println(result, err)
-
 	}
 }
-
-//func main() {
-//	addr := ":5050"
-//	// 使用 grpc.Dial 创建一个到指定地址的 gRPC 连接。
-//	// 此处使用不安全的证书来实现 SSL/TLS 连接
-//	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
-//	if err != nil {
-//		log.Fatalf(fmt.Sprintf("grpc connect addr [%s] 连接失败 %s", addr, err))
-//	}
-//	defer conn.Close()
-//
-//	//userClient := pb.NewLoginServiceClient(conn)
-//}

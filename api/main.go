@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/MantoCoding/grpcDouyinDemo/api/pkg"
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,7 +11,7 @@ func main() {
 
 	//访问地址，处理我们的请求 Request Response
 
-	initRouter(r)
+	pkg.InitRouter(r)
 
 	err := r.Run(":8080")
 	if err != nil {

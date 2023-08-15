@@ -16,7 +16,7 @@ func HashAndSalt(password string) (string, error) {
 }
 
 // ComparePasswords 对比明文密码和哈希值是否匹配
-func ComparePasswords(password, hashedPassword string) bool {
+func ComparePasswords(hashedPassword, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	return err == nil
 }

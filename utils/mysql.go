@@ -7,8 +7,6 @@ import (
 	"sync"
 )
 
-var mysqlDB *gorm.DB
-
 type Mysql struct {
 	Username string
 	Password string
@@ -35,20 +33,19 @@ func (m *Mysql) GetDB(db *gorm.DB) (*gorm.DB, error) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
-	if mysqlDB == nil {
-		conn, err := connectDefaultDB()
+	if db == nil {
+		conn, err := m.connectDefaultDB()
 		if err != nil {
 			return nil, fmt.Errorf("GetDB失败, %s", err)
 		}
-		mysqlDB = conn
+		db = conn
 	}
-	return mysqlDB, nil
+	return db, nil
 }
 
-func connectDefaultDB() (*gorm.DB, error) {
-	m := DefaultMySQLDB()
+func (m *Mysql) connectDefaultDB() (*gorm.DB, error) {
 	// root:root@tcp(127.0.0.1:3306)/gorm?
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local&timeout=%s", m.Username, m.Password, m.Host, m.Port, m.DBName, m.Timeout)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local&timeout=%s", m.Username, m.Password, m.Host, m.Port, m.DBName, m.Timeout)
 	//连接MYSQL, 获得DB类型实例，用于后面的数据库读写操作。
 	db, err := gorm.Open(mySQL.Open(dsn))
 	if err != nil {
