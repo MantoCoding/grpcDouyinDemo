@@ -22,7 +22,7 @@ const (
 	LoginService_Login_FullMethodName = "/user_login_grpc.LoginService/Login"
 )
 
-// LoginServiceClient is the client API for LoginService service.
+// LoginServiceClient is the api API for LoginService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LoginServiceClient interface {
