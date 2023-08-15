@@ -29,6 +29,7 @@ func (u *UserLoginService) Login(ctx context.Context, req *pb.DouyinUserLoginReq
 	fmt.Println("微服务调用成功，开始查询")
 	fmt.Printf("username : %v ", req.Username)
 	fmt.Printf("password : %v ", req.Password)
+
 	username := req.Username
 	password := req.Password
 	token, err := utils.GenerateJWT(username)
@@ -70,24 +71,3 @@ func (u *UserLoginService) Login(ctx context.Context, req *pb.DouyinUserLoginReq
 	resp.UserId = user.Id
 	return
 }
-
-//func main() {
-//	// 监听端口
-//	listen, err := net.Listen("tcp", ":8083")
-//	if err != nil {
-//		grpclog.Fatalf("Failed to listen: %v", err)
-//	}
-//
-//	// 创建一个gRPC服务器实例。
-//	s := grpc.NewServer()
-//	server := UserLoginService{}
-//	// 将server结构体注册为gRPC服务。
-//	pb.RegisterLoginServiceServer(s, &server)
-//	fmt.Println("grpc server running :8083")
-//	// 开始处理客户端请求。
-//	//reflection.Register(s)
-//	if err := s.Serve(listen); err != nil {
-//		log.Fatalf("failed to serve: %v", err)
-//	}
-//
-//}

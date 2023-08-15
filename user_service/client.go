@@ -19,10 +19,8 @@ func UserLoginAction() gin.HandlerFunc {
 
 		// 解析请求参数
 		var req pb.DouyinUserLoginRequest
-		if err := c.Bind(&req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
+		req.Username = c.Query("username")
+		req.Password = c.Query("password")
 
 		// 调用gRPC服务
 		result, err := client.Login(context.Background(), &req)
