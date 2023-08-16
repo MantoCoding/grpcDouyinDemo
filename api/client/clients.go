@@ -1,7 +1,7 @@
 package client
 
 import (
-	"github.com/MantoCoding/grpcDouyinDemo/user_service/user_login_grpc"
+	"github.com/MantoCoding/grpcDouyinDemo/user_service/user_grpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"sync"
@@ -12,12 +12,12 @@ import (
 var C Clients
 
 type Clients struct {
-	UserLoginClient user_login_grpc.LoginServiceClient
+	UserLoginClient user_grpc.ServiceClient
 
 	lock sync.Mutex
 }
 
-func (c *Clients) GetUserLoginClient() user_login_grpc.LoginServiceClient {
+func (c *Clients) GetUserLoginClient() user_grpc.ServiceClient {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
@@ -27,7 +27,7 @@ func (c *Clients) GetUserLoginClient() user_login_grpc.LoginServiceClient {
 		if err != nil {
 			panic("创建连接失败")
 		}
-		client := user_login_grpc.NewLoginServiceClient(conn)
+		client := user_grpc.NewServiceClient(conn)
 		c.UserLoginClient = client
 	}
 	return c.UserLoginClient

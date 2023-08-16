@@ -3,7 +3,7 @@ package pkg
 import (
 	"fmt"
 	"github.com/MantoCoding/grpcDouyinDemo/user_service"
-	pb "github.com/MantoCoding/grpcDouyinDemo/user_service/user_login_grpc"
+	pb "github.com/MantoCoding/grpcDouyinDemo/user_service/user_grpc"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
@@ -18,7 +18,7 @@ func InitRouter(r *gin.Engine) {
 
 		// 注册LoginService服务
 		//loginSrv := &user_service.UserLoginService{db: db} // 传入GORM数据库连接
-		pb.RegisterLoginServiceServer(grpcServer, user_service.NewUserLoginService())
+		pb.RegisterServiceServer(grpcServer, user_service.NewUserLoginService())
 		fmt.Println("grpc server running : 8083 ")
 
 		listen, err := net.Listen("tcp", ":8083")
